@@ -14,7 +14,6 @@ namespace BuildRandom
 	using StringType = std::string;
 	using WStringType = std::wstring;
 
-
 	/// <summary>
 	/// Returns a vector of type <c>T</c> with randomized content using a uniform distribution.
 	///	T must be default constructable.
@@ -23,7 +22,7 @@ namespace BuildRandom
 	///	<param name="minLength">the minimum count of the type T in the returned vector.</param>
 	/// <returns> a vector of type T with randomized content. Empty vector on error. </returns>
 	template<typename T>
-	[[nodiscard]] static auto BuildRandomVector(const CountType maxLength, const CountType minLength = 3) noexcept
+	[[nodiscard]] constexpr static auto BuildRandomVector(const CountType maxLength, const CountType minLength = 3) noexcept
 	{
 		//arg error checking, returns empty vector as per description
 		if (minLength >= maxLength || (maxLength <= 0) || (minLength <= 0))
@@ -35,12 +34,12 @@ namespace BuildRandom
 		(std::numeric_limits<T>::min(),
 			std::numeric_limits<T>::max());
 
-		std::uniform_int_distribution<> distLengthPossibility(minLength, maxLength);
+		const std::uniform_int_distribution<> distLengthPossibility(minLength, maxLength);
 		std::random_device rd;
 		std::mt19937 stringGenerator(rd()); // seed mersenne engine
 
 		//lambda used with std::generate to fill the vector with type T of randomized content.
-		auto getRandomElement = [&distElementPossibility, &stringGenerator]()
+		const auto getRandomElement = [&distElementPossibility, &stringGenerator]()
 		{
 			return static_cast<T>(distElementPossibility(stringGenerator));
 		};
@@ -64,7 +63,7 @@ namespace BuildRandom
 	///	<param name="maxLength">the maximum length of the strings in the returned vector.</param>
 	///	<param name="minLength">the minimum length of the strings in the returned vector.</param>
 	/// <returns> a vector of std::string with randomized content. Empty vector on error. </returns>
-	[[nodiscard]] static auto BuildRandomStringVector(const CountType numberOfStrings, const CountType maxLength, const CountType minLength = 3) noexcept
+	[[nodiscard]] constexpr static auto BuildRandomStringVector(const CountType numberOfStrings, const CountType maxLength, const CountType minLength = 3) noexcept
 	{
 		//arg error checking, returns empty vector as per description
 		if (minLength >= maxLength || (maxLength <= 0) || (numberOfStrings <= 0) || (minLength <= 0))
@@ -86,7 +85,7 @@ namespace BuildRandom
 	///	<param name="maxLength">the maximum length of the strings in the returned vector.</param>
 	///	<param name="minLength">the minimum length of the strings in the returned vector.</param>
 	/// <returns> a vector of std::wstring with randomized content. Empty vector on error. </returns>
-	[[nodiscard]] static auto BuildRandomWStringVector(const CountType numberOfStrings, const CountType maxLength, const CountType minLength = 3) noexcept
+	[[nodiscard]] constexpr static auto BuildRandomWStringVector(const CountType numberOfStrings, const CountType maxLength, const CountType minLength = 3) noexcept
 	{
 		//arg error checking, returns empty vector as per description
 		if (minLength >= maxLength || (maxLength <= 0) || (numberOfStrings <= 0) || (minLength <= 0))
