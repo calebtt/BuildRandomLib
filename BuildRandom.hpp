@@ -53,6 +53,7 @@ namespace BuildRandom
 	///	<param name="minLength">the minimum count of the type T in the returned vector.</param>
 	/// <returns> true on success, false on error.</returns>
 	template<typename T>
+	requires std::is_integral_v<T>&& std::is_pod_v<T>&& std::is_trivial_v<T>
 	[[nodiscard]] constexpr static bool FillContainerRandom(std::ranges::range auto &containerType, const CountType maxLength, const CountType minLength = 3) noexcept
 	{
 		//arg error checking, returns false as per description
