@@ -6,6 +6,7 @@
 #include <limits>
 #include <numeric>
 #include <ranges>
+#include <concepts>
 
 namespace BuildRandom
 {
@@ -15,45 +16,58 @@ namespace BuildRandom
 	using StringType = std::string;
 	using WStringType = std::wstring;
 
+	/// <summary>Helper function used to fill the container using the uniform_int_distribution distElementPossibility passed to it. </summary>
+	/// <typeparam name="T">Typename of values you want in the container.</typeparam>
+	///	<typeparam name="X">Distribution template param to use, not less than sizeof an int</typeparam>
+	///	<param name="containerType">some range capable container type</param>
+	///	<param name="maxLength">the maximum count of the type T in the returned vector.</param>
+	///	<param name="minLength">the minimum count of the type T in the returned vector.</param>
+	template <typename T, typename X> requires std::is_integral_v<T> && std::is_integral_v<X>
+	[[nodiscard]] constexpr static void DoGenerate(std::ranges::range auto& containerType, const CountType maxLength, const CountType minLength) noexcept
+	{
+		std::uniform_int_distribution<X> distElementPossibility(std::numeric_limits<X>::min(), std::numeric_limits<X>::max());
+		const std::uniform_int_distribution distLengthPossibility(minLength, maxLength);
+		std::random_device rd;
+		std::mt19937 randomElementGenerator(rd()); // seed mersenne engine
+		//the distribution uses the generator engine to get the value
+		const auto tLength = static_cast<std::size_t>(distLengthPossibility(randomElementGenerator));
+		containerType.resize(tLength);
+		std::generate(std::begin(containerType), std::end(containerType), [&randomElementGenerator, &distElementPossibility]() { return static_cast<T>(distElementPossibility(randomElementGenerator)); });
+	}
 	/// <summary>Returns a vector of a random number of type <c>T</c> with randomized content using a uniform distribution. T must be default constructable.</summary>
 	///	<param name="maxLength">the maximum count of the type T in the returned vector.</param>
 	///	<param name="minLength">the minimum count of the type T in the returned vector.</param>
 	/// <returns> a vector of type T with randomized content. Empty vector on error. </returns>
 	template<typename T>
-	requires std::is_integral_v<T> && std::is_pod_v<T> && std::is_trivial_v<T>
-	[[nodiscard]] constexpr static auto BuildRandomVector(const CountType maxLength, const CountType minLength = 3) noexcept
+	requires std::is_arithmetic_v<T> && (!std::is_same_v<T, bool>)
+	[[nodiscard]] constexpr static auto BuildRandomVector(const CountType maxLength, const CountType minLength = 3) noexcept -> std::vector<T>
 	{
 		//arg error checking, returns empty vector as per description
 		if (minLength >= maxLength || (maxLength <= 0) || (minLength <= 0))
 		{
 			return std::vector<T>();
 		}
-		//Test all kinds of random type T possibilities.
-		std::uniform_int_distribution<> distElementPossibility
-		(std::numeric_limits<T>::min(),
-			std::numeric_limits<T>::max());
-
-		const std::uniform_int_distribution<> distLengthPossibility(minLength, maxLength);
-		std::random_device rd;
-		std::mt19937 stringGenerator(rd()); // seed mersenne engine
-
-		//lambda used with std::generate to fill the vector with type T of randomized content.
-		const auto getRandomElement = [&distElementPossibility, &stringGenerator]()
+		std::vector<T> currentBuiltVector;
+		if constexpr (sizeof(T) <= sizeof(int) && std::is_unsigned_v<T>)
 		{
-			return static_cast<T>(distElementPossibility(stringGenerator));
-		};
-		//the distribution uses the generator engine to get the value
-		const auto tLength = static_cast<std::size_t>(distLengthPossibility(stringGenerator));
-		std::vector<T> currentBuiltVector(tLength, T{});
-		std::generate(std::begin(currentBuiltVector), std::end(currentBuiltVector), getRandomElement);
+			DoGenerate<T, unsigned int>(currentBuiltVector, maxLength, minLength);
+		}
+		else if constexpr (sizeof(T) <= sizeof(int) && std::is_signed_v<T>)
+		{
+			DoGenerate<T, int>(currentBuiltVector, maxLength, minLength);
+		}
+		else
+		{
+			DoGenerate<T, T>(currentBuiltVector, maxLength, minLength);
+		}
 		return currentBuiltVector;
 	}
 	/// <summary>Fills a container of type <c>T</c> with randomized content using a uniform distribution. T must be default constructable.</summary>
+	///	<param name="containerType">some range capable container type</param>
 	///	<param name="maxLength">the maximum count of the type T in the returned vector.</param>
 	///	<param name="minLength">the minimum count of the type T in the returned vector.</param>
 	/// <returns> true on success, false on error.</returns>
-	template<typename T>
-	requires std::is_integral_v<T>&& std::is_pod_v<T>&& std::is_trivial_v<T>
+	template<typename T> requires std::is_integral_v<T> && (!std::is_same_v<T, bool>)
 	[[nodiscard]] constexpr static bool FillContainerRandom(std::ranges::range auto &containerType, const CountType maxLength, const CountType minLength = 3) noexcept
 	{
 		//arg error checking, returns false as per description
@@ -61,24 +75,18 @@ namespace BuildRandom
 		{
 			return false;
 		}
-		//Test all kinds of random type T possibilities.
-		std::uniform_int_distribution<> distElementPossibility
-		(std::numeric_limits<T>::min(),
-			std::numeric_limits<T>::max());
-
-		const std::uniform_int_distribution<> distLengthPossibility(minLength, maxLength);
-		std::random_device rd;
-		std::mt19937 randomElementGenerator(rd()); // seed mersenne engine
-
-		//lambda used with std::generate to fill the vector with type T of randomized content.
-		const auto getRandomElement = [&distElementPossibility, &randomElementGenerator]()
+		if constexpr (sizeof(T) <= sizeof(int) && std::is_unsigned_v<T>)
 		{
-			return static_cast<T>(distElementPossibility(randomElementGenerator));
-		};
-		//the distribution uses the generator engine to get the value
-		const auto tLength = static_cast<std::size_t>(distLengthPossibility(randomElementGenerator));
-		containerType.resize(tLength);
-		std::generate(std::begin(containerType), std::end(containerType), getRandomElement);
+			DoGenerate<T, unsigned int>(containerType, maxLength, minLength);
+		}
+		else if constexpr (sizeof(T) <= sizeof(int) && std::is_signed_v<T>)
+		{
+			DoGenerate<T, int>(containerType, maxLength, minLength);
+		}
+		else
+		{
+			DoGenerate<T,T>(containerType, maxLength, minLength);
+		}
 		return true;
 	}
 	/// <summary>Returns a vector of <c>std::string</c> with randomized content using a uniform distribution.<para>NOTE:

@@ -6,9 +6,34 @@
 
 #include "BuildRandom.hpp"
 
+template <typename T, typename X>
+void FillContainerTest()
+{
+	using std::for_each;
+	using std::endl;
+	using std::cout;
+	using std::begin;
+	using std::end;
+	//filling a container T with random X between 5 and 100 elements long.
+	T fillContainer;
+	const bool result = BuildRandom::FillContainerRandom<X>(fillContainer, 100, 5);
+	std::cout << "Printing some values from a " << typeid(X).name() << std::endl;
+	for_each(begin(fillContainer), end(fillContainer), [](const auto elem)
+		{
+			if constexpr (std::is_same_v<X, char> || std::is_same_v<X, unsigned char>)
+			{
+				std::cout << std::dec << "[" << static_cast<const int>(elem) << "]";
+			}
+			else
+				std::cout << std::dec << "[" << static_cast<X>(elem) << "]";
+		});
+	std::cout << std::endl << std::endl;
+}
 
 int main()
 {
+	/* Note if you run this solution with clang ASAN enabled, you will see "access violation reading location" messages as the asan expands the address space
+	 * via generating exceptions. */
 	using namespace std;
 	//building a vector of strings with 10 strings of length between 3 and 5 characters.
 	const auto stringVec = BuildRandom::BuildRandomStringVector(10, 5);
@@ -42,22 +67,12 @@ int main()
 			cout << endl;
 		});
 	cout << endl << endl;
-	//filling a vector<char> with random characters between 5 and 100 elements long.
-	std::vector<char> fillVector;
-	const bool result = BuildRandom::FillContainerRandom<char>(fillVector, 100, 5);
-	cout << "Printing some character values from a std::vector." << endl;
-	for_each(begin(fillVector), end(fillVector), [](const auto elem)
-		{
-			cout << std::dec << "[" << static_cast<const int>(elem) << "]";
-		});
-	cout << endl << endl;
-	//filling a list<char> with random characters between 5 and 100 elements long.
-	list<char> fillList;
-	const bool result2 = BuildRandom::FillContainerRandom<char>(fillList, 100, 5);
-	cout << "Printing some character values from a std::list." << endl;
-	for_each(begin(fillList), end(fillList), [](const auto elem)
-		{
-			cout << std::dec << "[" << static_cast<const int>(elem) << "]";
-		});
-	cout << endl << endl;
+
+	FillContainerTest<std::list<unsigned char>, unsigned char>();
+	FillContainerTest<std::list<char>, char>();
+	FillContainerTest<std::vector<int>, int>();
+	FillContainerTest<std::vector<unsigned int>, unsigned int>();
+	FillContainerTest<std::vector<long long>, long long>();
+	FillContainerTest<std::vector<unsigned long long>, unsigned long long>();
+	//FillContainerTest<std::vector<bool>, bool>(); // doesn't work for bool, constrained away
 }
