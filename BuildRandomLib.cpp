@@ -33,7 +33,10 @@ void FillContainerTest()
 int main()
 {
 	/* Note if you run this solution with clang ASAN enabled, you will see "access violation reading location" messages as the asan expands the address space
-	 * via generating exceptions. */
+	 * via generating exceptions.
+	 * Also note that in VS 2019 having a "requires (someconcept) && (someconcept)" on a line separate from the template<typename T> declaration line
+	 * would not parse! The compiler could not parse that line, it was very obviously a bug, so be aware if you use C++20 concepts in VS2019.
+	 */
 	using namespace std;
 	//building a vector of strings with 10 strings of length between 3 and 5 characters.
 	const auto stringVec = BuildRandom::BuildRandomStringVector(10, 5);

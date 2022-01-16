@@ -23,7 +23,7 @@ namespace BuildRandom
 	///	<param name="maxLength">the maximum count of the type T in the returned vector.</param>
 	///	<param name="minLength">the minimum count of the type T in the returned vector.</param>
 	template <typename T, typename X> requires std::is_integral_v<T> && std::is_integral_v<X>
-	[[nodiscard]] constexpr static void DoGenerate(std::ranges::range auto& containerType, const CountType maxLength, const CountType minLength) noexcept
+	constexpr static void DoGenerate(std::ranges::range auto& containerType, const CountType maxLength, const CountType minLength) noexcept
 	{
 		std::uniform_int_distribution<X> distElementPossibility(std::numeric_limits<X>::min(), std::numeric_limits<X>::max());
 		const std::uniform_int_distribution distLengthPossibility(minLength, maxLength);
@@ -38,8 +38,7 @@ namespace BuildRandom
 	///	<param name="maxLength">the maximum count of the type T in the returned vector.</param>
 	///	<param name="minLength">the minimum count of the type T in the returned vector.</param>
 	/// <returns> a vector of type T with randomized content. Empty vector on error. </returns>
-	template<typename T>
-	requires std::is_arithmetic_v<T> && (!std::is_same_v<T, bool>)
+	template<typename T> requires std::is_arithmetic_v<T> && (!std::is_same_v<T, bool>)
 	[[nodiscard]] constexpr static auto BuildRandomVector(const CountType maxLength, const CountType minLength = 3) noexcept -> std::vector<T>
 	{
 		//arg error checking, returns empty vector as per description
