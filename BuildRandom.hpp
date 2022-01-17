@@ -16,7 +16,7 @@ namespace BuildRandom
 	using StringType = std::string;
 	using WStringType = std::wstring;
 
-	/// <summary>Helper function used to fill the container using the uniform_int_distribution distElementPossibility passed to it. </summary>
+	/// <summary>Helper function used to fill a container</summary>
 	/// <typeparam name="T">Typename of values you want in the container.</typeparam>
 	///	<typeparam name="X">Distribution template param to use, not less than sizeof an int</typeparam>
 	///	<param name="containerType">some range capable container type</param>
