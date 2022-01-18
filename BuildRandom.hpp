@@ -32,7 +32,8 @@ namespace BuildRandom
 		//the distribution uses the generator engine to get the value
 		const auto tLength = static_cast<std::size_t>(distLengthPossibility(randomElementGenerator));
 		containerType.resize(tLength);
-		std::generate(std::begin(containerType), std::end(containerType), [&randomElementGenerator, &distElementPossibility]() { return static_cast<T>(distElementPossibility(randomElementGenerator)); });
+		constexpr auto GenLambda = [&randomElementGenerator, &distElementPossibility]()constexpr { return static_cast<T>(distElementPossibility(randomElementGenerator)); };
+		std::ranges::generate(containerType, GenLambda);
 	}
 	/// <summary>Returns a vector of a random number of type <c>T</c> with randomized content using a uniform distribution. T must be default constructable.</summary>
 	///	<param name="maxLength">the maximum count of the type T in the returned vector.</param>
@@ -42,7 +43,7 @@ namespace BuildRandom
 	[[nodiscard]] constexpr static auto BuildRandomVector(const CountType maxLength, const CountType minLength = 3) noexcept -> std::vector<T>
 	{
 		//arg error checking, returns empty vector as per description
-		if (minLength >= maxLength || (maxLength <= 0) || (minLength <= 0))
+		if (minLength > maxLength || (maxLength <= 0) || (minLength <= 0))
 		{
 			return std::vector<T>();
 		}
@@ -70,7 +71,7 @@ namespace BuildRandom
 	[[nodiscard]] constexpr static bool FillContainerRandom(std::ranges::range auto &containerType, const CountType maxLength, const CountType minLength = 3) noexcept
 	{
 		//arg error checking, returns false as per description
-		if (minLength >= maxLength || (maxLength <= 0) || (minLength <= 0))
+		if (minLength > maxLength || (maxLength <= 0) || (minLength <= 0))
 		{
 			return false;
 		}
@@ -101,7 +102,7 @@ namespace BuildRandom
 	[[nodiscard]] constexpr static auto BuildRandomStringVector(const CountType numberOfStrings, const CountType maxLength, const CountType minLength = 3) noexcept
 	{
 		//arg error checking, returns empty vector as per description
-		if (minLength >= maxLength || (maxLength <= 0) || (numberOfStrings <= 0) || (minLength <= 0))
+		if (minLength > maxLength || (maxLength <= 0) || (numberOfStrings <= 0) || (minLength <= 0))
 		{
 			return std::vector<StringType>();
 		}
@@ -109,7 +110,7 @@ namespace BuildRandom
 		for (CountType i = 0; i < numberOfStrings; i++)
 		{
 			const auto tempString = BuildRandom::BuildRandomVector<CharType>(maxLength, minLength);
-			ret.emplace_back(StringType(std::begin(tempString), std::end(tempString)));
+			ret.emplace_back(StringType(tempString.begin(), tempString.end()));
 		}
 		return ret;
 	}
@@ -121,7 +122,7 @@ namespace BuildRandom
 	[[nodiscard]] constexpr static auto BuildRandomWStringVector(const CountType numberOfStrings, const CountType maxLength, const CountType minLength = 3) noexcept
 	{
 		//arg error checking, returns empty vector as per description
-		if (minLength >= maxLength || (maxLength <= 0) || (numberOfStrings <= 0) || (minLength <= 0))
+		if (minLength > maxLength || (maxLength <= 0) || (numberOfStrings <= 0) || (minLength <= 0))
 		{
 			return std::vector<WStringType>();
 		}
@@ -129,7 +130,7 @@ namespace BuildRandom
 		for (CountType i = 0; i < numberOfStrings; i++)
 		{
 			const auto tempString = BuildRandom::BuildRandomVector<WCharType>(maxLength, minLength);
-			ret.emplace_back(WStringType(std::begin(tempString), std::end(tempString)));
+			ret.emplace_back(WStringType(tempString));
 		}
 		return ret;
 	}
