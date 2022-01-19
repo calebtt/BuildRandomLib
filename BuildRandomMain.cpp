@@ -73,27 +73,30 @@ int main()
 		ss << endl;
 	}
 	ss << endl << endl;
-
+	cout << ss.str();
 	FillContainerTest<std::list<unsigned char>, unsigned char>(ss);
 	FillContainerTest<std::list<char>, char>(ss);
 	FillContainerTest<std::vector<int>, int>(ss);
 	FillContainerTest<std::vector<unsigned int>, unsigned int>(ss);
 	FillContainerTest<std::vector<long long>, long long>(ss);
 	FillContainerTest<std::vector<unsigned long long>, unsigned long long>(ss);
-	//FillContainerTest<std::vector<bool>, bool>(ss); // doesn't work for bool, constrained away
-	ss << "Building a container that is far too large, in order to catch the alloc exception." << std::endl;
 	cout << ss.str();
-	try
-	{
-		using BigSize = size_t;
-		constexpr BigSize Vsize = std::numeric_limits<BigSize>::max()-1;
-		auto bigVec = BuildRandom::BuildRandomVector<unsigned long long>(Vsize, Vsize);
-	}
-	catch (const std::exception &e)
-	{
-		ss << e.what() << std::endl;
-		cout << ss.str();
-	}
+
+	//FillContainerTest<std::vector<bool>, bool>(ss); // doesn't work for bool, constrained away
+	/* Uncomment below to test vector too large exception handling. */
+	//ss << "Building a container that is far too large, in order to catch the alloc exception." << std::endl;
+	//cout << ss.str();
+	//try
+	//{
+	//	using BigSize = size_t;
+	//	constexpr BigSize BigVectorSize = std::numeric_limits<BigSize>::max()-1;
+	//	auto bigVec = BuildRandom::BuildRandomVector<BigSize>(BigVectorSize, BigVectorSize);
+	//}
+	//catch (const std::exception &e)
+	//{
+	//	ss << e.what() << std::endl;
+	//	cout << ss.str();
+	//}
 	cout << "Enter to exit." << endl;
 	cin.get();
 }
