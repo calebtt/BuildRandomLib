@@ -33,7 +33,7 @@ namespace BuildRandom
 		//the distribution uses the generator engine to get the value
 		const auto tLength = static_cast<std::size_t>(distLengthPossibility(randomElementGenerator));
 		containerType.resize(tLength); // <-- can fail to allocate the memory.
-		constexpr auto GenLambda = [&randomElementGenerator, &distElementPossibility]()constexpr { return static_cast<T>(distElementPossibility(randomElementGenerator)); };
+		const auto GenLambda = [&randomElementGenerator, &distElementPossibility]()constexpr { return static_cast<T>(distElementPossibility(randomElementGenerator)); };
 		std::ranges::generate(containerType, GenLambda);
 	}
 	/// <summary>Returns a vector of a random number of type <c>T</c> with randomized content using a uniform distribution. T must be default constructable.</summary>
