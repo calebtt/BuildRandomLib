@@ -7,6 +7,7 @@
 #include <numeric>
 #include <ranges>
 #include <concepts>
+#include <vector>
 
 namespace BuildRandom
 {
@@ -44,7 +45,7 @@ namespace BuildRandom
 	///	<param name="minValue">the minimum value of the type T in the returned value.</param>
 	///	<returns>T with random value</returns>
 	template <typename T, typename X> requires std::is_integral_v<T>&& std::is_integral_v<X>
-	constexpr static T DoGenerateSingle(const T maxValue, const T minValue)
+	constexpr static T DoGenerateSingle(const T maxValue, const T minValue) noexcept
 	{
 		std::uniform_int_distribution<X> distElementPossibility(minValue,maxValue);
 		std::random_device rd;
@@ -156,7 +157,7 @@ namespace BuildRandom
 	///	<param name="minValue">the minimum value of the type T in the returned value.</param>
 	/// <returns> A type T with random value. Default constructed T on error. </returns>
 	template<typename T> requires std::is_arithmetic_v<T> && (!std::is_same_v<T, bool>)
-	[[nodiscard]] constexpr static T BuildRandomSingleValue(const T maxValue = std::numeric_limits<T>::max(), const T minValue = std::numeric_limits<T>::min())
+	[[nodiscard]] constexpr static T BuildRandomSingleValue(const T maxValue = std::numeric_limits<T>::max(), const T minValue = std::numeric_limits<T>::min()) noexcept
 	{
 		//arg error checking, returns default constructed T as per description
 		if (minValue > maxValue)
