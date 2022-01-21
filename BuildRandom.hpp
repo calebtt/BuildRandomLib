@@ -10,6 +10,7 @@
 
 namespace BuildRandom
 {
+	using ValueRangeType = long long;
 	using CountType = size_t;
 	using CharType = unsigned char;
 	using WCharType = wchar_t;
@@ -35,6 +36,21 @@ namespace BuildRandom
 		containerType.resize(tLength); // <-- can fail to allocate the memory.
 		const auto GenLambda = [&randomElementGenerator, &distElementPossibility]()constexpr { return static_cast<T>(distElementPossibility(randomElementGenerator)); };
 		std::ranges::generate(containerType, GenLambda);
+	}
+	/// <typeparam name="T">Typename of value you want in the return value.</typeparam>
+	///	<typeparam name="X">Distribution template param to use, not less than sizeof an int</typeparam>
+	/// <summary>Helper function used to get a range-bound value</summary>
+	///	<param name="maxValue">the maximum value of the type T in the returned value.</param>
+	///	<param name="minValue">the minimum value of the type T in the returned value.</param>
+	///	<returns>T with random value</returns>
+	template <typename T, typename X> requires std::is_integral_v<T>&& std::is_integral_v<X>
+	constexpr static T DoGenerateSingle(const T maxValue, const T minValue)
+	{
+		std::uniform_int_distribution<X> distElementPossibility(minValue,maxValue);
+		std::random_device rd;
+		std::mt19937 randomElementGenerator(rd()); // seed mersenne engine
+		//the distribution uses the generator engine to get the value
+		return static_cast<T>(distElementPossibility(randomElementGenerator));
 	}
 	/// <summary>Returns a vector of a random number of type <c>T</c> with randomized content using a uniform distribution. T must be default constructable.</summary>
 	///	<param name="maxLength">the maximum count of the type T in the returned vector.</param>
@@ -131,8 +147,33 @@ namespace BuildRandom
 		for (CountType i = 0; i < numberOfStrings; i++)
 		{
 			const auto tempString = BuildRandom::BuildRandomVector<WCharType>(maxLength, minLength);
-			ret.emplace_back(WStringType(tempString));
+			ret.emplace_back(WStringType(tempString.begin(), tempString.end()));
 		}
 		return ret;
+	}
+	/// <summary>Returns a vector of a random number of type <c>T</c> with randomized content using a uniform distribution. T must be default constructable.</summary>
+	///	<param name="maxValue">the maximum value of the type T in the returned value.</param>
+	///	<param name="minValue">the minimum value of the type T in the returned value.</param>
+	/// <returns> A type T with random value. Default constructed T on error. </returns>
+	template<typename T> requires std::is_arithmetic_v<T> && (!std::is_same_v<T, bool>)
+	[[nodiscard]] constexpr static T BuildRandomSingleValue(const T maxValue = std::numeric_limits<T>::max(), const T minValue = std::numeric_limits<T>::min())
+	{
+		//arg error checking, returns default constructed T as per description
+		if (minValue > maxValue)
+		{
+			return T{};
+		}
+		if constexpr (sizeof(T) <= sizeof(int) && std::is_unsigned_v<T>)
+		{
+			return DoGenerateSingle<T, unsigned int>(maxValue, minValue);
+		}
+		else if constexpr (sizeof(T) <= sizeof(int) && std::is_signed_v<T>)
+		{
+			return DoGenerateSingle<T, int>(maxValue, minValue);
+		}
+		else
+		{
+			return DoGenerateSingle<T, T>(maxValue, minValue);
+		}
 	}
 }

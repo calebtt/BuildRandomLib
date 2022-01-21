@@ -74,6 +74,7 @@ int main()
 	}
 	ss << endl << endl;
 	cout << ss.str();
+	ss.str("");
 	FillContainerTest<std::list<unsigned char>, unsigned char>(ss);
 	FillContainerTest<std::list<char>, char>(ss);
 	FillContainerTest<std::vector<int>, int>(ss);
@@ -81,7 +82,23 @@ int main()
 	FillContainerTest<std::vector<long long>, long long>(ss);
 	FillContainerTest<std::vector<unsigned long long>, unsigned long long>(ss);
 	cout << ss.str();
-
+	ss.str("");
+	
+	//building single element values
+	auto PrintSingleValue = [&ss](auto val)
+	{
+		ss.imbue(std::locale(""));
+		ss << typeid(decltype(val)).name() << ":" << std::showpos << std::dec << val << endl;
+	};
+	PrintSingleValue(BuildRandom::BuildRandomSingleValue<unsigned char>());
+	PrintSingleValue(BuildRandom::BuildRandomSingleValue<signed char>());
+	PrintSingleValue(BuildRandom::BuildRandomSingleValue<unsigned int>());
+	PrintSingleValue(BuildRandom::BuildRandomSingleValue<signed int>());
+	PrintSingleValue(BuildRandom::BuildRandomSingleValue<unsigned long long>());
+	PrintSingleValue(BuildRandom::BuildRandomSingleValue<signed long long>());
+	cout << ss.str();
+	ss.str("");
+	
 	//FillContainerTest<std::vector<bool>, bool>(ss); // doesn't work for bool, constrained away
 	/* Uncomment below to test vector too large exception handling. */
 	//ss << "Building a container that is far too large, in order to catch the alloc exception." << std::endl;
