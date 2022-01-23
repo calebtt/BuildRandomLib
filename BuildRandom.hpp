@@ -26,7 +26,7 @@ namespace BuildRandom
 	///	<param name="minLength">the minimum count of the type T in the returned vector.</param>
 	///	<throws> exception on failure to resize container type. </throws>
 	template <typename T, typename X> requires std::is_integral_v<T> && std::is_integral_v<X>
-	constexpr static void DoGenerate(std::ranges::range auto& containerType, const CountType maxLength, const CountType minLength)
+	constexpr void DoGenerate(std::ranges::range auto& containerType, const CountType maxLength, const CountType minLength)
 	{
 		std::uniform_int_distribution<X> distElementPossibility(std::numeric_limits<X>::min(), std::numeric_limits<X>::max());
 		const std::uniform_int_distribution distLengthPossibility(minLength, maxLength);
@@ -45,7 +45,7 @@ namespace BuildRandom
 	///	<param name="minValue">the minimum value of the type T in the returned value.</param>
 	///	<returns>T with random value</returns>
 	template <typename T, typename X> requires std::is_integral_v<T>&& std::is_integral_v<X>
-	constexpr static T DoGenerateSingle(const T maxValue, const T minValue) noexcept
+	constexpr T DoGenerateSingle(const T maxValue, const T minValue) noexcept
 	{
 		std::uniform_int_distribution<X> distElementPossibility(minValue,maxValue);
 		std::random_device rd;
@@ -58,7 +58,7 @@ namespace BuildRandom
 	///	<param name="minLength">the minimum count of the type T in the returned vector.</param>
 	/// <returns> a vector of type T with randomized content. Empty vector on error. </returns>
 	template<typename T> requires std::is_arithmetic_v<T> && (!std::is_same_v<T, bool>)
-	[[nodiscard]] constexpr static auto BuildRandomVector(const CountType maxLength, const CountType minLength = 3) -> std::vector<T>
+	[[nodiscard]] constexpr auto BuildRandomVector(const CountType maxLength, const CountType minLength = 3) -> std::vector<T>
 	{
 		//arg error checking, returns empty vector as per description
 		if (minLength > maxLength || (maxLength <= 0) || (minLength <= 0))
@@ -86,7 +86,7 @@ namespace BuildRandom
 	///	<param name="minLength">the minimum count of the type T in the returned vector.</param>
 	/// <returns> true on success, false on error.</returns>
 	template<typename T> requires std::is_integral_v<T> && (!std::is_same_v<T, bool>)
-	[[nodiscard]] constexpr static bool FillContainerRandom(std::ranges::range auto &containerType, const CountType maxLength, const CountType minLength = 3)
+	[[nodiscard]] constexpr bool FillContainerRandom(std::ranges::range auto &containerType, const CountType maxLength, const CountType minLength = 3)
 	{
 		//arg error checking, returns false as per description
 		if (minLength > maxLength || (maxLength <= 0) || (minLength <= 0))
@@ -117,7 +117,7 @@ namespace BuildRandom
 	///	<param name="maxLength">the maximum length of the strings in the returned vector.</param>
 	///	<param name="minLength">the minimum length of the strings in the returned vector.</param>
 	/// <returns> a vector of std::string with randomized content. Empty vector on error. </returns>
-	[[nodiscard]] constexpr static auto BuildRandomStringVector(const CountType numberOfStrings, const CountType maxLength, const CountType minLength = 3)
+	[[nodiscard]] constexpr auto BuildRandomStringVector(const CountType numberOfStrings, const CountType maxLength, const CountType minLength = 3)
 	{
 		//arg error checking, returns empty vector as per description
 		if (minLength > maxLength || (maxLength <= 0) || (numberOfStrings <= 0) || (minLength <= 0))
@@ -137,7 +137,7 @@ namespace BuildRandom
 	///	<param name="maxLength">the maximum length of the strings in the returned vector.</param>
 	///	<param name="minLength">the minimum length of the strings in the returned vector.</param>
 	/// <returns> a vector of std::wstring with randomized content. Empty vector on error. </returns>
-	[[nodiscard]] constexpr static auto BuildRandomWStringVector(const CountType numberOfStrings, const CountType maxLength, const CountType minLength = 3)
+	[[nodiscard]] constexpr auto BuildRandomWStringVector(const CountType numberOfStrings, const CountType maxLength, const CountType minLength = 3)
 	{
 		//arg error checking, returns empty vector as per description
 		if (minLength > maxLength || (maxLength <= 0) || (numberOfStrings <= 0) || (minLength <= 0))
@@ -157,7 +157,7 @@ namespace BuildRandom
 	///	<param name="minValue">the minimum value of the type T in the returned value.</param>
 	/// <returns> A type T with random value. Default constructed T on error. </returns>
 	template<typename T> requires std::is_arithmetic_v<T> && (!std::is_same_v<T, bool>)
-	[[nodiscard]] constexpr static T BuildRandomSingleValue(const T maxValue = std::numeric_limits<T>::max(), const T minValue = std::numeric_limits<T>::min()) noexcept
+	[[nodiscard]] constexpr T BuildRandomSingleValue(const T maxValue = std::numeric_limits<T>::max(), const T minValue = std::numeric_limits<T>::min()) noexcept
 	{
 		//arg error checking, returns default constructed T as per description
 		if (minValue > maxValue)
