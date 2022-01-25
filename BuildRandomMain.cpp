@@ -87,7 +87,7 @@ int main()
 	//building single element values
 	auto PrintSingleValue = [&ss](auto val)
 	{
-		ss.imbue(std::locale(""));
+		//ss.imbue(std::locale(""));
 		ss << typeid(decltype(val)).name() << ":" << std::showpos << std::dec << val << endl;
 	};
 	PrintSingleValue(BuildRandom::BuildRandomSingleValue<unsigned char>());
@@ -98,7 +98,8 @@ int main()
 	PrintSingleValue(BuildRandom::BuildRandomSingleValue<signed long long>());
 	cout << ss.str();
 	ss.str("");
-	
+
+
 	//FillContainerTest<std::vector<bool>, bool>(ss); // doesn't work for bool, constrained away
 	/* Uncomment below to test vector too large exception handling. */
 	//ss << "Building a container that is far too large, in order to catch the alloc exception." << std::endl;
