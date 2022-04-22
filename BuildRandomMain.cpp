@@ -14,7 +14,7 @@ void FillContainerTest(auto &strm, const int minLength = 10, const int maxLength
 	using std::cout;
 	using std::begin;
 	using std::end;
-	//filling a container T with random X between 5 and 100 elements long.
+	//filling a container T with random X
 	T fillContainer{};
 	const bool result = BuildRandom::FillContainerRandom<X>(fillContainer, minLength, maxLength);
 	strm << "Printing some values from a " << typeid(X).name() << std::endl;

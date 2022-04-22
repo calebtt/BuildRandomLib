@@ -167,7 +167,7 @@ struct BuildRandom
 	///	<param name="minValue">the minimum value of the type T in the returned value.</param>
 	/// <returns> A type T with random value. Default constructed T on error. </returns>
 	template<typename T>
-		requires std::is_arithmetic_v<T> && (!std::is_same_v<T, bool>)
+	requires std::is_arithmetic_v<T> && (!std::is_same_v<T, bool>)
 	[[nodiscard]] static constexpr T BuildRandomSingleValue(const T minValue = std::numeric_limits<T>::min(), const T maxValue = std::numeric_limits<T>::max()) noexcept
 	{
 		//arg error checking, returns default constructed T as per description
