@@ -7,7 +7,7 @@
 #include "BuildRandom.hpp"
 
 template <typename T, typename X>
-void FillContainerTest(auto &strm, const int maxLength = 10, const int minLength = 10)
+void FillContainerTest(auto &strm, const int minLength = 10, const int maxLength = 10)
 {
 	using std::for_each;
 	using std::endl;
@@ -16,7 +16,7 @@ void FillContainerTest(auto &strm, const int maxLength = 10, const int minLength
 	using std::end;
 	//filling a container T with random X between 5 and 100 elements long.
 	T fillContainer{};
-	const bool result = BuildRandom::FillContainerRandom<X>(fillContainer, maxLength, minLength);
+	const bool result = BuildRandom::FillContainerRandom<X>(fillContainer, minLength, maxLength);
 	strm << "Printing some values from a " << typeid(X).name() << std::endl;
 	if (result)
 	{
@@ -43,6 +43,7 @@ int main()
 	using namespace std;
 	constexpr size_t NumberOfItems= 10;
 	constexpr size_t MaxLengthOfStrings = 10;
+	constexpr size_t MinLengthOfStrings = 3;
 	constexpr size_t MinLength = 10;
 	constexpr size_t MaxLength = 10;
 	// can be used to delay or disable output.
@@ -58,13 +59,13 @@ int main()
 	}
 	ss << endl << endl;
 	//building a vector of random size (between the arg values) with random data.
-	const auto stringVec2 = BuildRandom::BuildRandomVector<unsigned char>(MaxLength, MinLength);
+	const auto stringVec2 = BuildRandom::BuildRandomVector<unsigned char>(MinLength, MaxLength);
 	ss << "Printing some unsigned character values." << endl;
 	for (const auto elem : stringVec2)
 		ss << std::dec << "[" << static_cast<const int>(elem) << "]";
 	ss << endl << endl;
 	//building a vector of wstrings (wide char)
-	const auto stringVec3 = BuildRandom::BuildRandomWStringVector(NumberOfItems, MaxLengthOfStrings);
+	const auto stringVec3 = BuildRandom::BuildRandomWStringVector(NumberOfItems, MinLengthOfStrings, MaxLengthOfStrings);
 	ss << "Printing some wide char values." << endl;
 	for (const auto& selem : stringVec)
 	{
