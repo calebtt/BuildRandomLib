@@ -14,6 +14,7 @@ void FillContainerTest(auto &strm, const int minLength = 10, const int maxLength
 	using std::cout;
 	using std::begin;
 	using std::end;
+	using std::format;
 	//filling a container T with random X
 	T fillContainer{};
 	const bool result = BuildRandom::FillContainerRandom<X>(fillContainer, minLength, maxLength);
@@ -22,7 +23,7 @@ void FillContainerTest(auto &strm, const int minLength = 10, const int maxLength
 	{
 		for (const auto elem : fillContainer)
 		{
-			if constexpr (std::is_same_v<X, char> || std::is_same_v<X, unsigned char>)
+			if constexpr (std::same_as<X, char> || std::same_as<X, unsigned char>)
 				strm << std::dec << "[" << static_cast<const int>(elem) << "]";
 			else
 				strm << std::dec << "[" << static_cast<X>(elem) << "]";
@@ -30,7 +31,7 @@ void FillContainerTest(auto &strm, const int minLength = 10, const int maxLength
 		strm << std::endl << std::endl;
 	}
 	else
-		strm << std::format("Error filling container in FillContainerTests() where T:{0}, X:{1}, strm:{2}", typeid(T).name(), typeid(X).name(), typeid(strm).name());
+		strm << format("Error filling container in FillContainerTests() where T:{0}, X:{1}, strm:{2}", typeid(T).name(), typeid(X).name(), typeid(strm).name());
 }
 
 int main()
