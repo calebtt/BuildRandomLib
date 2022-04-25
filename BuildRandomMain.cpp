@@ -14,7 +14,7 @@ void FillContainerTest(auto &strm, const int minLength = 10, const int maxLength
 	using std::cout;
 	using std::begin;
 	using std::end;
-	using std::format;
+	using std::format; // modify this if your compiler doesn't have format yet
 	//filling a container T with random X
 	T fillContainer{};
 	const bool result = BuildRandom::FillContainerRandom<X>(fillContainer, minLength, maxLength);

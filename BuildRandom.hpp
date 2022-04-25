@@ -127,7 +127,7 @@ struct BuildRandom
 	///	<param name="maxLength">the maximum length of the strings in the returned vector.</param>
 	///	<param name="minLength">the minimum length of the strings in the returned vector.</param>
 	/// <returns> a vector of std::string with randomized content. Empty vector on error. </returns>
-	[[nodiscard]] static constexpr auto BuildRandomStringVector(const CountType numberOfStrings, const CountType minLength, const CountType maxLength)
+	[[nodiscard]] static auto BuildRandomStringVector(const CountType numberOfStrings, const CountType minLength, const CountType maxLength)
 	{
 		//arg error checking, returns empty vector as per description
 		if (minLength > maxLength || (maxLength <= 0) || (numberOfStrings <= 0) || (minLength <= 0))
@@ -147,7 +147,7 @@ struct BuildRandom
 	///	<param name="maxLength">the maximum length of the strings in the returned vector.</param>
 	///	<param name="minLength">the minimum length of the strings in the returned vector.</param>
 	/// <returns> a vector of std::wstring with randomized content. Empty vector on error. </returns>
-	[[nodiscard]] static constexpr auto BuildRandomWStringVector(const CountType numberOfStrings, const CountType minLength, const CountType maxLength)
+	[[nodiscard]] static auto BuildRandomWStringVector(const CountType numberOfStrings, const CountType minLength, const CountType maxLength)
 	{
 		//arg error checking, returns empty vector as per description
 		if (minLength > maxLength || (maxLength <= 0) || (numberOfStrings <= 0) || (minLength <= 0))
