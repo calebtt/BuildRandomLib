@@ -74,7 +74,6 @@ int main()
 			ws << std::dec << "[" << static_cast<const int>(welem) << "]";
 		ws << endl;
 	}
-	ss << endl << endl;
 	cout << ss.str();
 	wcout << ws.str();
 	ss.str("");
