@@ -48,6 +48,7 @@ int main()
 	constexpr size_t MaxLength = 10;
 	// can be used to delay or disable output.
 	std::stringstream ss;
+	std::wstringstream ws;
 	//building a vector of strings
 	const auto stringVec = BuildRandom::BuildRandomStringVector(NumberOfItems, MaxLengthOfStrings, MaxLengthOfStrings);
 	ss << "Printing some character values, the default char type for std::string might be signed..." << endl;
@@ -66,15 +67,16 @@ int main()
 	ss << endl << endl;
 	//building a vector of wstrings (wide char)
 	const auto stringVec3 = BuildRandom::BuildRandomWStringVector(NumberOfItems, MinLengthOfStrings, MaxLengthOfStrings);
-	ss << "Printing some wide char values." << endl;
-	for (const auto& selem : stringVec)
+	ws << "Printing some wide char values." << endl;
+	for (const auto& selem : stringVec3)
 	{
 		for (const auto welem : selem)
-			ss << std::dec << "[" << static_cast<const int>(welem) << "]";
-		ss << endl;
+			ws << std::dec << "[" << static_cast<const int>(welem) << "]";
+		ws << endl;
 	}
 	ss << endl << endl;
 	cout << ss.str();
+	wcout << ws.str();
 	ss.str("");
 	FillContainerTest<std::list<unsigned char>, unsigned char>(ss);
 	FillContainerTest<std::list<char>, char>(ss);
