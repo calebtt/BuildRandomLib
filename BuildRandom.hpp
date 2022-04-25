@@ -32,7 +32,7 @@ struct BuildRandom
 	///	<param name="maxValue">maximum integer value used in the distribution.</param>
 	///	<throws> exception on failure to resize container type. </throws>
 	template <typename T, typename X>
-	requires std::is_integral_v<T>&& std::is_integral_v<X>
+	requires std::integral<T> && std::integral<X>
 	static constexpr void DoGenerate(std::ranges::range auto& containerType,
 		const CountType minLength,
 		const CountType maxLength,
@@ -54,7 +54,7 @@ struct BuildRandom
 	///	<param name="minValue">the minimum value of the type T in the returned value.</param>
 	///	<returns>T with random value</returns>
 	template <typename T, typename X>
-	requires std::is_integral_v<T>&& std::is_integral_v<X>
+	requires std::integral<T> && std::integral<X>
 	static constexpr T DoGenerateSingle(const T minValue, const T maxValue) noexcept
 	{
 		std::uniform_int_distribution<X> distElementPossibility(minValue, maxValue);
@@ -66,7 +66,7 @@ struct BuildRandom
 	///	<param name="minLength">the minimum count of the type T in the returned vector.</param>
 	/// <returns> a vector of type T with randomized content. Empty vector on error. </returns>
 	template<typename T>
-	requires std::is_arithmetic_v<T> && (!std::is_same_v<T, bool>)
+	requires std::integral<T> && (!std::same_as<T, bool>)
 	[[nodiscard]] static constexpr auto BuildRandomVector(const CountType minLength, const CountType maxLength) -> std::vector<T>
 	{
 		//arg error checking, returns empty vector as per description
@@ -75,11 +75,11 @@ struct BuildRandom
 			return std::vector<T>();
 		}
 		std::vector<T> currentBuiltVector;
-		if constexpr (sizeof(T) <= sizeof(int) && std::is_unsigned_v<T>)
+		if constexpr (sizeof(T) <= sizeof(int) && std::unsigned_integral<T>)
 		{
 			DoGenerate<T, unsigned int>(currentBuiltVector, minLength, maxLength);
 		}
-		else if constexpr (sizeof(T) <= sizeof(int) && std::is_signed_v<T>)
+		else if constexpr (sizeof(T) <= sizeof(int) && std::signed_integral<T>)
 		{
 			DoGenerate<T, int>(currentBuiltVector, minLength, maxLength);
 		}
@@ -95,7 +95,7 @@ struct BuildRandom
 	///	<param name="minLength">the minimum count of the type T in the returned vector.</param>
 	/// <returns> true on success, false on error.</returns>
 	template<typename T>
-	requires std::is_integral_v<T> && (!std::is_same_v<T, bool>)
+	requires std::integral<T> && (!std::same_as<T, bool>)
 	[[nodiscard]] static constexpr bool FillContainerRandom(std::ranges::range auto& containerType, const CountType minLength, const CountType maxLength)
 	{
 		//arg error checking, returns false as per description
@@ -103,11 +103,11 @@ struct BuildRandom
 		{
 			return false;
 		}
-		if constexpr (sizeof(T) <= sizeof(int) && std::is_unsigned_v<T>)
+		if constexpr (sizeof(T) <= sizeof(int) && std::unsigned_integral<T>)
 		{
 			DoGenerate<T, unsigned int>(containerType, minLength, maxLength);
 		}
-		else if constexpr (sizeof(T) <= sizeof(int) && std::is_signed_v<T>)
+		else if constexpr (sizeof(T) <= sizeof(int) && std::signed_integral<T>)
 		{
 			DoGenerate<T, int>(containerType, minLength, maxLength);
 		}
@@ -167,7 +167,7 @@ struct BuildRandom
 	///	<param name="minValue">the minimum value of the type T in the returned value.</param>
 	/// <returns> A type T with random value. Default constructed T on error. </returns>
 	template<typename T>
-	requires std::is_arithmetic_v<T> && (!std::is_same_v<T, bool>)
+	requires std::integral<T> && (!std::same_as<T, bool>)
 	[[nodiscard]] static constexpr T BuildRandomSingleValue(const T minValue = std::numeric_limits<T>::min(), const T maxValue = std::numeric_limits<T>::max()) noexcept
 	{
 		//arg error checking, returns default constructed T as per description
@@ -175,11 +175,11 @@ struct BuildRandom
 		{
 			return T{};
 		}
-		if constexpr (sizeof(T) <= sizeof(int) && std::is_unsigned_v<T>)
+		if constexpr (sizeof(T) <= sizeof(int) && std::unsigned_integral<T>)
 		{
 			return DoGenerateSingle<T, unsigned int>(minValue, maxValue);
 		}
-		else if constexpr (sizeof(T) <= sizeof(int) && std::is_signed_v<T>)
+		else if constexpr (sizeof(T) <= sizeof(int) && std::signed_integral<T>)
 		{
 			return DoGenerateSingle<T, int>(minValue, maxValue);
 		}
