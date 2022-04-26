@@ -40,7 +40,7 @@ struct BuildRandom
 		const T maxValue = std::numeric_limits<T>::max())
 	{
 		std::uniform_int_distribution<X> distElementPossibility(minValue, maxValue);
-		const std::uniform_int_distribution distLengthPossibility(minLength, maxLength);
+		std::uniform_int_distribution distLengthPossibility(minLength, maxLength);
 		//the distribution uses the generator engine to get the value
 		const auto tLength = static_cast<std::size_t>(distLengthPossibility(randomElementGenerator));
 		containerType.resize(tLength); // <-- can fail to allocate the memory.
