@@ -23,7 +23,7 @@ void FillContainerTest(auto &strm, const int minLength = 10, const int maxLength
 	{
 		for (const auto elem : fillContainer)
 		{
-			if constexpr (std::same_as<X, char> || std::same_as<X, unsigned char>)
+			if constexpr (std::same_as<X, signed char> || std::same_as<X, unsigned char>)
 				strm << std::dec << "[" << static_cast<const int>(elem) << "]";
 			else
 				strm << std::dec << "[" << static_cast<X>(elem) << "]";
